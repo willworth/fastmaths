@@ -1,68 +1,78 @@
-import React, {useEffect, useState} from 'react'
-import './gameContainer.css'
+import React, { useEffect, useState } from "react";
+import "./gameContainer.css";
 const GameContainer = () => {
-    const [answer, setAnswer] = useState(null)
-    const [response, setResponse] = useState('')
+  // state
+  const [questionNumbers, setQuestionNumbers] = useState([]);
+  const [response, setResponse] = useState(0);
+  const [correctAnswer, setCorrectAnswer] = useState(undefined);
+  const [winner, setWinner] = useState(false);
 
-    const getRandomInt= (max)=> {
-        return Math.floor(Math.random() * Math.floor(max));
-        }
-    
+  // helpers
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+  };
 
-    const handleChange = e => {
-        setResponse({
-            response: e.target.value
-        })
+  const generateNewQuestion = () => {
+    let number1 = getRandomInt(9);
+    let number2 = getRandomInt(9);
+    // to ensure no poor questions.
+    while (number1 < 2 || number2 < 2) {
+      number1 = getRandomInt(9);
+      number2 = getRandomInt(9);
     }
+    setQuestionNumbers([number1, number2]);
+    console.log(`generateNewQuestion has been called`);
+  };
 
-    const generateNewQuestion = () => {
-        let number1 = getRandomInt(9);
-        let number2 = getRandomInt(9);
-        return [number1,number2]
+  const handleChange = (e) => {
+    setResponse(e.target.value);
+  };
 
+  // this runs on first render to provide initial values
+  useEffect(() => {
+    generateNewQuestion();
+  }, []);
+
+  //monitor the question to update the correct answer
+  useEffect(() => {
+    let ans = questionNumbers[0] * questionNumbers[1];
+    setCorrectAnswer(ans);
+  }, [questionNumbers]);
+
+
+  //handle ui changes on correct answer
+  useEffect(() => {
+    if (response == correctAnswer) {
+      setWinner(true);
+      setTimeout(function () {
+        setWinner(false);
+        generateNewQuestion();
+      }, 3000);
     }
-    let firstMultiplier = getRandomInt(9)
-    let secondMultiplier = getRandomInt(9)
+  }, [response, correctAnswer]);
 
-  
-    useEffect(() => {
-      
-        return () => {
-            setAnswer(firstMultiplier * secondMultiplier)
-            console.log("the answer",answer);
-            console.log("the response",response);
-        }
-    }, [response])
-    // const query = {   <p>what is {firstMultiplier} * {secondMultiplier}?</p>}
-    
-    useEffect(() => {
-        console.log('response', response);
-        if (response === answer)
-        return () => {
-           console.log("yes!");
-           
-        }
-    }, [response])
+  return (
+    <div className="gamecontainer">
+      {!winner &&
 
 
-    return (
-        <div className='gamecontainer'>
-            <h1>gameContainer</h1>
-            <form>
-                <h1>maths</h1>
-                <hr />
-                {/* {query} */}
-                <div className="query">
-                    <p>what is {firstMultiplier} * {secondMultiplier}?</p>
-                </div>
-                <input value={response.value}
-                onChange={handleChange}
-                     />
+
+
+        <h1>Practise multiplication!</h1>
+        <h3 className="question">
+          What is <span className="questionNumber">{questionNumbers[0]}</span>{" "}
+        times <span className="questionNumber">{questionNumbers[1]}</span> ?
+      </h3>
+        <form>
+          <input type="number" value={response.value} onChange={handleChange} />
         </form>
 
 
-        </div>
-    )
-}
+
+      }
+      {winner && <div className="winner blinking">That's right!</div>}
+    </div>
+  );
+};
 
 export default GameContainer;

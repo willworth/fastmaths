@@ -8,3 +8,43 @@
   align-items: center;
   justify-content: center;
 }
+
+.questionNumber {
+  color: yellow;
+}
+.question {
+  color: black;
+  border: double 5px wheat;
+  padding: 20px;
+  background-color: tomato;
+}
+
+.winner {
+  color: black;
+  font-weight: 700;
+  border: double 5px wheat;
+  /* margin-top: 10px; */
+  padding: 20px;
+  background-color: tomato;
+}
+.blinking {
+  /* animation: blinkingText 1.2s infinite; */
+  animation: blinkingText 0.7s infinite;
+}
+@keyframes blinkingText {
+  0% {
+    color: #000;
+  }
+  49% {
+    color: #000;
+  }
+  60% {
+    color: transparent;
+  }
+  99% {
+    color: transparent;
+  }
+  100% {
+    color: #000;
+  }
+}
